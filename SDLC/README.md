@@ -1,4 +1,4 @@
 ## Important Note
 
-The SDLC assignmeent is only here as verification for completion before deadline, as there is a technical problem for BYOD files. 
+The SDLC assignmeent is posted here due to a conflict with the BYOD file uploading system.
 Do not try to view attatched files by scrolling around, as it is very difficult. Download it instead.
