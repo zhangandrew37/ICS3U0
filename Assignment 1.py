@@ -7,18 +7,10 @@
 #
 # Author:      628333
 # Created:     24-Oct-2019
-# Updated:     26-Oct-2019
+# Updated:     1-Nov-2019
 # -----------------------------------------------------------------------------
-# TODO
-# - format print the --> aligned left [equipment           cost] <-- aligned right
-# - write print messages (check if any were missed out)
-# - change the (refer to lines 255-etc)
-# - add properly formatted comments
-# - parameters (github notes - formal documentation)
-# - add menu at top (probably login or confirm whether or not want to build a character)
-#   - select expertise at the start (if advanced, remove the part that says 'refer to guide/lines[...])
-# - fix ability scores
-# -----------------------------------Classes and Functions used throughout the code-------------------------------------
+
+# Note: It is recommended that you run the program with the console covering approximately half the screen
 
 
 # stores information about codes for text styles/colours
@@ -31,7 +23,7 @@ class TextStyle:  # stored in a class for organization
     red = '\033[91m'
 
 
-# stores the character's information/attributes
+# stores the character's attributes
 class CharacterInformation:  # stored in a class for organization
     name = ''
     age = 0
@@ -46,18 +38,16 @@ class CharacterInformation:  # stored in a class for organization
     stats = {"Hit Points": 0, "Size": "", "Speed": 0}
     abilityScores = {"Strength": 10, "Dexterity": 10, "Constitution": 10, "Intelligence": 10, "Wisdom": 10, "Charisma": 10, }
 
-
-# returns user's final input for the character's background
+# returns user's final input with confirmation
 def anyInput(*options):
     while True:  # runs until user input is in the list of options
         anyChoice = input("Selection: ")
         choices = [*options]
 
-        # user confirmation of their input selection
         def confirm(functionName):
             print("Confirm? (Y/N)")
 
-            while True:  # runs until user input is correct
+            while True:  # runs until user input is Y or N
                 userInput = input()
                 if userInput.upper() == 'Y':
                     print("Selection has been saved.")
@@ -73,26 +63,26 @@ def anyInput(*options):
 
         else:
             print("Sorry, that was an invalid input. Try again.")
-
-def menu():
-    print()
-
+            
 # ---------------------------------------------------Introduction-------------------------------------------------------
 
-# introducing the program
 print("Welcome to Buildrew™ - A Pathfinder Second Edition character builder.")
-print()  # organization of output
+print()
 
 # creating an account
 print(TextStyle.underline + "Create an Account" + TextStyle.reset)
 username = input("Username: ")
 password = input("Password: ")
-print()  # organization of output
+print()
 print("Hello, " + username + "!")
 print("Let's start building your character.")
-print()  # organization of output
+print()
+
+# --------------------------------------------------------Name----------------------------------------------------------
 
 CharacterInformation.name = input("Please input your character's name: ")
+
+# --------------------------------------------------------Age-----------------------------------------------------------
 
 while True:
     try:
@@ -107,17 +97,19 @@ while True:
         print("Sorry, you must input an integer as your character's age. Please try again.")
         continue
 
+# -------------------------------------------------------Height---------------------------------------------------------
+
 while True:
     try:
-        height = int(input("Please input your character's height (ft): "))
+        height = float(input("Please input your character's height (ft): "))
         if height>0:
             CharacterInformation.height = height
             break
         else:
-            print("Sorry, you must input a positive integer as your character's age. Please try again.")
+            print("Sorry, you must input a positive integer as your character's height. Please try again.")
             continue
     except ValueError:
-        print("Sorry, you must input an integer as your character's age. Please try again.")
+        print("Sorry, you must input an integer as your character's height. Please try again.")
         continue
 
 # -----------------------------------------------------Ancestry---------------------------------------------------------
@@ -131,7 +123,7 @@ print("C - Gnome")
 print("D - Goblin")
 print("E - Halfling")
 print("F - Human")
-print()  # organization of output
+print()
 
 # takes in user input for ancestry choice
 finalAncestryInput = anyInput('A', 'B', 'C', 'D', 'E', 'F')
@@ -146,9 +138,10 @@ ancestryChoices = {
     "F": "Human"
 }
 CharacterInformation.ancestry = ancestryChoices[finalAncestryInput.upper()]
-print()  # organization of output
+print()
 
 # -------------------------------------------------Heritage choices-----------------------------------------------------
+# converts input into the real heritage name
 
 dwarfHeritageChoices = {
     'A': "Ancient-Blooded Dwarf",
@@ -205,6 +198,7 @@ humanHeritageChoices = {
 }
 
 # ------------------------------------------Free ability boost choices--------------------------------------------------
+# converts input into real ability boost name
 
 freeBoostChoices = {
     'A': "Strength",
@@ -215,8 +209,12 @@ freeBoostChoices = {
     'F': "Charisma"
 }
 
-def freeAbilityBoost(amount):
-    print("Thanks to your ancestry, you have (" + str(amount) + ") free ability boosts.")
+# based on the ancestry, takes user input for free ability boosts
+def freeAbilityBoost (amount):
+    if amount == 2:
+        print("Thanks to your ancestry, you have (" + str(amount) + ") free ability boosts.")
+    else:
+        print("Thanks to your ancestry, you have (" + str(amount) + ") free ability boost.")
     print("Please input the ability boost(s) you have chosen")
     print("A - Strength")
     print("B - Dexterity")
@@ -233,6 +231,7 @@ def freeAbilityBoost(amount):
             print("You have (1) remaining ability boost to choose from")
 
 # ------------------------------------------Ancestry Feat choices--------------------------------------------------
+# converts input into the real ancestry feat name
 
 dwarfAFChoices = {
     "A": "Avenge In Glory",
@@ -327,9 +326,9 @@ humanAFChoices = {
 
 
 # --------------------------------------Heritage, Boost and Ancestry Feat-----------------------------------------------
+# saves user input for ancestry, heritage and ancestry feat
 
 # adds appropriate statistics to the character
-# saves user input for the character's heritage
 if CharacterInformation.ancestry == 'Dwarf':
     CharacterInformation.stats["Hit Points"] = 10
     CharacterInformation.stats["Size"] = "Medium"
@@ -350,7 +349,7 @@ if CharacterInformation.ancestry == 'Dwarf':
     print("F - Oathkeeper Dwarf")
     print("G - Rock Dwarf")
     print("H - Strong-blooded Dwarf")
-    print()  # organization of output
+    print()
     # user input for heritage choice
     finalHeritageInput = anyInput('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H')
     CharacterInformation.heritage = dwarfHeritageChoices[finalHeritageInput]
@@ -367,6 +366,8 @@ if CharacterInformation.ancestry == 'Dwarf':
     print("H - Surface Culture")
     print("I - Unburdened Iron")
     print("J - Vengeful Hatred")
+    print()
+    # user input for ancestry feat choice
     finalAFInput = anyInput('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J')
     CharacterInformation.ancestryFeat = dwarfAFChoices[finalAFInput]
 
@@ -379,7 +380,6 @@ elif CharacterInformation.ancestry == 'Elf':
     CharacterInformation.abilityScores["Constitution"] = 8
     freeAbilityBoost(1)
 
-    # heritage printout message
     print()
     print(TextStyle.bold + "Next, input your character's heritage" + TextStyle.reset)
     print("A - Ancient Elf")
@@ -389,8 +389,7 @@ elif CharacterInformation.ancestry == 'Elf':
     print("E - Seer Elf")
     print("F - Whisper Elf")
     print("G - Woodland Elf")
-    print()  # organization of output
-    # user input for heritage choice
+    print()
     finalHeritageInput = anyInput('A', 'B', 'C', 'D', 'E', 'F', 'G')
     CharacterInformation.heritage = elfHeritageChoices[finalHeritageInput]
 
@@ -408,7 +407,7 @@ elif CharacterInformation.ancestry == 'Elf':
     print("J - Unwavering Mien")
     print("K - Wildborn Magic")
     print("L - Woodcraft")
-    print()  # organization of output
+    print()
     finalAFInput = anyInput('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L')
     CharacterInformation.ancestryFeat = elfAFChoices[finalAFInput]
 
@@ -421,7 +420,6 @@ elif CharacterInformation.ancestry == 'Gnome':
     CharacterInformation.abilityScores["Strength"] = 8
     freeAbilityBoost(1)
 
-    # heritage printout message
     print()
     print(TextStyle.bold + "Next, input your character's heritage" + TextStyle.reset)
     print("A - Chameleon Gnome")
@@ -430,9 +428,7 @@ elif CharacterInformation.ancestry == 'Gnome':
     print("D - Umbral Gnome")
     print("E - Vivacious Gnome")
     print("F - Wellspring Gnome")
-    print()  # organization of output
-
-    # user input for heritage choice
+    print()
     finalHeritageInput = anyInput('A', 'B', 'C', 'D', 'E', 'F')
     CharacterInformation.heritage = gnomeHeritageChoices[finalHeritageInput]
 
@@ -465,7 +461,6 @@ elif CharacterInformation.ancestry == 'Goblin':
     CharacterInformation.abilityScores["Strength"] = 8
     freeAbilityBoost(1)
 
-    # heritage printout message
     print()
     print(TextStyle.bold + "Next, input your character's heritage" + TextStyle.reset)
     print("A - Charhide Goblin")
@@ -475,8 +470,7 @@ elif CharacterInformation.ancestry == 'Goblin':
     print("E - Tailed Goblin")
     print("F - Treedweller Elf")
     print("G - Unbreakable Goblin")
-    print()  # organization of output
-    # user input for heritage choice
+    print()
     finalHeritageInput = anyInput('A', 'B', 'C', 'D', 'E', 'F', 'G')
     CharacterInformation.heritage = goblinHeritageChoices[finalHeritageInput]
 
@@ -508,7 +502,6 @@ elif CharacterInformation.ancestry == 'Hafling':
     CharacterInformation.abilityScores["Strength"] = 8
     freeAbilityBoost(1)
 
-    # heritage printout message
     print()
     print(TextStyle.bold + "Next, input your character's heritage" + TextStyle.reset)
     print("A - Gutsy Halfling")
@@ -516,8 +509,7 @@ elif CharacterInformation.ancestry == 'Hafling':
     print("C - Nomadic Halfling")
     print("D - Twilight Halfling")
     print("E - Wildwood Halfling")
-    print()  # organization of output
-    # user input for heritage choice
+    print()
     finalHeritageInput = anyInput('A', 'B', 'C', 'D', 'E')
     CharacterInformation.heritage = halflingHeritageChoices[finalHeritageInput]
 
@@ -545,15 +537,12 @@ elif CharacterInformation.ancestry == 'Human':
     CharacterInformation.abilityScores["Intelligence"] = 12
     freeAbilityBoost(2)
 
-    # heritage printout message
     print()
     print(TextStyle.bold + "Next, input your character's heritage" + TextStyle.reset)
     print("A - Skilled Heritage")
     print("B - Versatile Heritage")
     print("C - Wintertouched Heritage")
-    print()  # organization of output
-    # user input for heritage choice
-    print(TextStyle.bold + "Next, input your character's heritage" + TextStyle.reset)
+    print()
     finalHeritageInput = anyInput('A', 'B', 'C')
     CharacterInformation.heritage = humanHeritageChoices[finalHeritageInput]
 
@@ -578,12 +567,13 @@ elif CharacterInformation.ancestry == 'Human':
 
 # taking user input for the character's background
 # Note: does not list all choices due to the immense amount.
-print()  # organization of output
+print()
 print(TextStyle.bold + "Now, input your character's background" + TextStyle.reset)
 print(TextStyle.italics + "Note: Choices are not listed due to the immense amount.")
 print("=>Please refer to a pathfinder 2e guide OR")
-print("the code (Lines 325-426)" + TextStyle.reset)
-print()  # organization of output
+print("the code (Lines 580-716)" + TextStyle.reset)
+print()
+
 finalBackgroundInput = anyInput(
     "ACADEMIC",
     "ACOLYTE",
@@ -693,7 +683,7 @@ CharacterInformation.background = finalBackgroundInput
 # ---------------------------------------------------------Class--------------------------------------------------------
 
 # user input for class choice
-print()  # organization of output
+print()
 print("Please input your character's class")
 print("A - Alchemist")
 print("B - Barbarian")
@@ -707,7 +697,7 @@ print("I - Ranger")
 print("J - Rogue")
 print("K - Sorcerer")
 print("L - Wizard")
-print()  # organization of output
+print()
 
 classChoices = {
     "A": "Alchemist",
@@ -733,6 +723,8 @@ goldPieces = 15
 # user input for class choice
 print("Please input your character's items")
 print("Balance: 15GP")
+
+# converts input into the actual item name
 itemChoices = {
     'A': "Jellyfish Lamp",
     "B": "Pesh",
@@ -744,6 +736,7 @@ itemChoices = {
     "H": "Sun Orchid Elixir"
 }
 
+# used for converting the item into GP
 itemPrices = {
     "Jellyfish Lamp": 2,
     "Pesh": 2,
@@ -754,23 +747,28 @@ itemPrices = {
     "Final Blade": 40,
     "Sun Orchid Elixir": 50
 }
-condition = 0
+
+condition = 0 #used to break outer loop
 while condition == 0:
-    print()  # organization of output
-    # print format this
-    print("A - Jellyfish Lamp 2GP")
-    print("B - Pesh 2 GP")
-    print("C - Swim Fins 5 GP")
-    print("D - Archaic Wayfinder 30 GP")
-    print("E - Black Pearl Aeon Stone 20 GP")
-    print("F - Blessed Tattoo 90 GP")
-    print("G - Final Blade 40 GP")
-    print("H - Sun Orchid Elixir 50 GP")
-    print()  # organization of output
+    print()
+    print(
+        f"{'A - Jellyfish Lamp':<30}{'2 GP':>10}",
+        f"\n{'B - Pesh':<30}{'2 GP':>10}",
+        f"\n{'C - Swim Fins':<30}{'5 GP':>10}",
+        f"\n{'D - Archaic Wayfinder':<30}{'30 GP':>10}",
+        f"\n{'E - Black Pearl Aeon Stone':<30}{'20 GP':>10}",
+        f"\n{'F - Blessed Tattoo':<30}{'90 GP':>10}",
+        f"\n{'G - Final Blade':<30}{'40 GP':>10}",
+        f"\n{'H - Sun Orchid Elixir':<30}{'50 GP':>10}",
+          )
+    print()
+
     item = ''
     finalItemInput = anyInput('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H')
     item = (itemChoices[finalItemInput.upper()])
-    if (itemPrices[item] <= goldPieces):
+
+    # makes sure user has enough GP to buy items
+    if itemPrices[item] <= goldPieces:
         goldPieces -= itemPrices[item]
         CharacterInformation.items.append(item)
     else:
@@ -778,15 +776,15 @@ while condition == 0:
         print("You do not have enough Gold Pieces to purchase your selected item.")
         print("Please try again.")
         continue
-    if (goldPieces >= 2):
+    if goldPieces >= 2:  # less than least costing item -> cannot buy any further
         print()
         print("Would you like to input another item? (Y/N)")
         while True:
             print("Balance: " + str(goldPieces) + "GP")
             decision = input("Selection: ").upper()
-            if (decision == 'Y'):
+            if decision == 'Y':
                 break
-            elif (decision == 'N'):
+            elif decision == 'N':
                 condition = 1
                 break
             else:
@@ -795,6 +793,7 @@ while condition == 0:
     else:
         print("You do not have enough gold pieces to purchase any items.")
         break
+
 # -------------------------------------------------------Spells---------------------------------------------------------
 print()
 # a list of all the classes that do not use spells
@@ -804,8 +803,8 @@ if CharacterInformation.characterClass.upper() not in classWithoutSpells:
     print("Please input your character's spell")
     print(TextStyle.italics + "Note: Choices are not listed due to the immense amount.")
     print("=>Please refer to a pathfinder 2e guide OR")
-    print("the code (Lines 544-628)" + TextStyle.reset)
-    print()  # organization of output
+    print("the code (Lines 811-892)" + TextStyle.reset)
+    print()
     finalSpellInput = anyInput(
         "ACID SPLASH",
         "AIR BUBBLE",
@@ -899,44 +898,46 @@ else:
 
 print("Good job! You have completed your character.")
 print()
-print("----------------------------------------- Character Summary -------------------------------------------")
+print("------------------------------- Character Information Summary -------------------------------")
 print()
 
 print(TextStyle.underline + "Character Description" + TextStyle.reset)
-print(TextStyle.bold + "Name: " + TextStyle.reset + CharacterInformation.name)
-print(TextStyle.bold + "Age: " + TextStyle.reset + str(CharacterInformation.age) + " years old")
-print(TextStyle.bold + "Height: " + TextStyle.reset + str(CharacterInformation.height) + " feet")
-print(TextStyle.bold + "Hit Points: " + TextStyle.reset + str(CharacterInformation.stats['Hit Points']))
-print(TextStyle.bold + "Size: " + TextStyle.reset + CharacterInformation.stats['Size'])
-print(TextStyle.bold + "Speed: " + TextStyle.reset + str(CharacterInformation.stats['Speed']) + " feet")
+print("Name: " + CharacterInformation.name)
+print("Age: " + str(CharacterInformation.age) + " years old")
+print("Height: " + str(CharacterInformation.height) + " feet tall")
+print("Hit Points: " + str(CharacterInformation.stats['Hit Points']))
+print("Size: " + CharacterInformation.stats['Size'])
+print("Speed: " + str(CharacterInformation.stats['Speed']) + " feet")
 print()
 
-print(TextStyle.underline + "Character Information" + TextStyle.reset)
-print(TextStyle.bold + "Ancestry: " + TextStyle.reset + CharacterInformation.ancestry)
-print(TextStyle.bold + "Heritage: " + TextStyle.reset + CharacterInformation.heritage)
-print(TextStyle.bold + "Ancestry Feat: " + TextStyle.reset + CharacterInformation.ancestryFeat)
-print(TextStyle.bold + "Background: " + TextStyle.reset + CharacterInformation.background)
-print(TextStyle.bold + "Class: " + TextStyle.reset + CharacterInformation.characterClass)
+print(TextStyle.underline + "Character Attributes" + TextStyle.reset)
+print("Ancestry: " + CharacterInformation.ancestry)
+print("Heritage: " + CharacterInformation.heritage)
+print("Ancestry Feat: " + CharacterInformation.ancestryFeat)
+print("Background: " + CharacterInformation.background)
+print("Class: " + CharacterInformation.characterClass)
 print()
 
 print(TextStyle.underline + "Inventory" + TextStyle.reset)
-print(TextStyle.bold + "Spell: " + TextStyle.reset + CharacterInformation.spell)
-for item in CharacterInformation.items:
-    print(TextStyle.bold + "Item: " + TextStyle.reset + item)
+print("Spell: " + CharacterInformation.spell)
+itemList = ', '.join(CharacterInformation.items)
+print("Items: " + itemList)
 
 print(" ")
 print(TextStyle.underline + "Ability Scores" + TextStyle.reset)
-print(TextStyle.bold + "Strength: " + TextStyle.reset + str(CharacterInformation.abilityScores['Strength']))
-print(TextStyle.bold + "Dexterity: " + TextStyle.reset + str(CharacterInformation.abilityScores['Dexterity']))
-print(TextStyle.bold + "Constitution: " + TextStyle.reset + str(CharacterInformation.abilityScores['Constitution']))
-print(TextStyle.bold + "Intelligence: " + TextStyle.reset + str(CharacterInformation.abilityScores['Intelligence']))
-print(TextStyle.bold + "Wisdom: " + TextStyle.reset + str(CharacterInformation.abilityScores['Wisdom']))
-print(TextStyle.bold + "Charisma: " + TextStyle.reset + str(CharacterInformation.abilityScores['Charisma']))
-print("----------------------------------------------------------------------------------------------------------")
+print("Strength: " + str(CharacterInformation.abilityScores['Strength']))
+print("Dexterity: " + str(CharacterInformation.abilityScores['Dexterity']))
+print("Constitution: " + str(CharacterInformation.abilityScores['Constitution']))
+print("Intelligence: " + str(CharacterInformation.abilityScores['Intelligence']))
+print("Wisdom: " + str(CharacterInformation.abilityScores['Wisdom']))
+print("Charisma: " + str(CharacterInformation.abilityScores['Charisma']))
+print("---------------------------------------------------------------------------------------------")
 
 # --------------------------------------(Post character creation) - User feedback---------------------------------------
-print()  # organization of output
-print("Thank you for using Buildrew™. Would you like to rate your experience? (Y/N)")
+print()
+print(">>Thank you for using Buildrew™. Would you like to rate your experience? (Y/N)")
+
+#takes user input for the rating
 while True:
     rateInput = input()
     if rateInput.upper() == 'Y':
@@ -959,7 +960,7 @@ while True:
                     print("Sorry, please input an integer between 1 to 5")
             except ValueError:
                 print("Sorry, please input an integer between 1 to 5")
-        print()  # organization of output
+        print()
         print(TextStyle.reset + "Thank you. Your feedback is greatly appreciated!")
         break
     elif rateInput.upper() == 'N':
